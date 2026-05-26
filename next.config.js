@@ -1,28 +1,12 @@
-@"
-// next.config.js
-import createNextIntlPlugin from 'next-intl/plugin';
-
-const withNextIntl = createNextIntlPlugin('./i18n/request.js');
-
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
     remotePatterns: [
-      {
-        protocol: 'https',
-        hostname: '**',
-      },
-    ],
-    formats: ['image/avif', 'image/webp'],
+      { protocol: "https", hostname: "**" }
+    ]
   },
-  experimental: {
-    optimizeCss: true,
-    optimizePackageImports: ['lucide-react', 'react-icons'],
-  },
-  serverExternalPackages: ['mongoose'],
-  reactStrictMode: true,
-  poweredByHeader: false,
+  serverExternalPackages: ["mongoose"],
+  reactStrictMode: true
 };
 
-export default withNextIntl(nextConfig);
-"@ | Out-File -FilePath next.config.js -Encoding utf8
+export default nextConfig;
