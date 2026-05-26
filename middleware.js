@@ -1,19 +1,13 @@
 @"
-// middleware.js - For Render deployment
-import { NextResponse } from 'next/server';
+import createMiddleware from 'next-intl/middleware';
 
-export function middleware(request) {
-  const { pathname } = request.nextUrl;
-  
-  // If accessing root, redirect to /en
-  if (pathname === '/') {
-    return NextResponse.redirect(new URL('/en', request.url));
-  }
-  
-  return NextResponse.next();
-}
+export default createMiddleware({
+  locales: ['en', 'ar', 'ur', 'zh', 'tr', 'ms', 'id'],
+  defaultLocale: 'en',
+  localePrefix: 'always'
+});
 
 export const config = {
-  matcher: ['/((?!api|_next|static|favicon.ico).*)'],
+  matcher: ['/', '/(en|ar|ur|zh|tr|ms|id)/:path*', '/((?!api|_next|_vercel|.*\\\\..*).*)']
 };
 "@ | Out-File -FilePath middleware.js -Encoding utf8
