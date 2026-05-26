@@ -1,76 +1,93 @@
-import ClientLayout from '../client-layout';
+// app/layout.js
+import { Inter } from 'next/font/google';
+import './globals.css';
+import { NotificationProvider } from './contexts/NotificationContext';
 
-// ✅ OPTIMIZED: Memoize static params
-const SUPPORTED_LOCALES = ['en', 'ur', 'zh', 'tr', 'ms', 'id'];
+// ✅ OPTIMIZED: Font configuration with optimal settings
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter', // ✅ CSS variable for font usage
+  weight: ['400', '500', '600', '700'], // ✅ Only preload needed weights
+  display: 'swap', // ✅ Swap text while font loads (no FOIT)
+  preload: true, // ✅ Preload font for faster loading
+});
 
-export function generateStaticParams() {
-  return SUPPORTED_LOCALES.map(locale => ({ locale }));
-}
+// ✅ OPTIMIZED: Metadata configuration
+export const metadata = {
+  title: 'Tijarah.pk',
+  description: 'Your marketplace platform',
+  // ✅ Add Open Graph metadata for better social sharing
+  openGraph: {
+    title: 'Tijarah.pk',
+    description: 'Your marketplace platform',
+    url: 'https://tijarah.pk',
+    siteName: 'Tijarah.pk',
+    locale: 'en_US',
+    type: 'website',
+  },
+  // ✅ Add Twitter Card for social sharing
+  twitter: {
+    card: 'summary_large_image',
+    title: 'Tijarah.pk',
+    description: 'Your marketplace platform',
+  },
+  // ✅ Add robots metadata for SEO
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  // ✅ Add icons
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  },
+};
 
-// ✅ OPTIMIZED: Cache messages at build time
-const messagesCache = new Map();
+// ✅ OPTIMIZED: Generate viewport metadata
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
+  themeColor: '#3b82f6',
+};
 
-async function getMessages(locale) {
-  // ✅ Check cache first
-  if (messagesCache.has(locale)) {
-    return messagesCache.get(locale);
-  }
-
-  try {
-    // ✅ Dynamic import with better error handling
-    const messages = (await import(`../../messages/${locale}.json`, {
-      assert: { type: 'json' }
-    })).default;
-    
-    // ✅ Cache for subsequent requests
-    messagesCache.set(locale, messages);
-    return messages;
-  } catch (error) {
-    console.error(`Failed to load messages for locale: ${locale}`, error);
-    
-    // ✅ Fallback to English if available
-    if (locale !== 'en') {
-      try {
-        const fallbackMessages = (await import(`../../messages/en.json`, {
-          assert: { type: 'json' }
-        })).default;
-        messagesCache.set(locale, fallbackMessages);
-        return fallbackMessages;
-      } catch (fallbackError) {
-        console.error('Failed to load fallback English messages', fallbackError);
-      }
-    }
-    
-    return {};
-  }
-}
-
-// ✅ OPTIMIZED: Add caching headers
-export const revalidate = 3600; // Cache for 1 hour (ISR)
-
-export async function generateMetadata({ params }) {
-  const { locale } = await params;
-  const messages = await getMessages(locale);
-  
-  return {
-    description: messages.siteDescription || 'Tijarah.pk - Buy and Sell Online',
-  };
-}
-
-export default async function LocaleLayout({ children, params }) {
-  const { locale } = await params;
-
-  // ✅ OPTIMIZED: Validate locale
-  if (!SUPPORTED_LOCALES.includes(locale)) {
-    console.warn(`Unsupported locale: ${locale}, defaulting to English`);
-  }
-
-  // ✅ OPTIMIZED: Get cached messages
-  const messages = await getMessages(locale);
-
+export default function RootLayout({ children }) {
   return (
-    <ClientLayout locale={locale} messages={messages}>
-      {children}
-    </ClientLayout>
+    <html
+      lang="en"
+      // ✅ Add language attribute for accessibility
+      suppressHydrationWarning={true}
+    // ✅ Suppress hydration warning for dynamic content
+    >
+      <head>
+        {/* ✅ Add preconnect to external resources */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+
+        {/* ✅ Add DNS prefetch for third-party services */}
+        <link rel="dns-prefetch" href="https://api.example.com" />
+
+        {/* ✅ Add meta charset for proper text encoding */}
+        <meta charSet="utf-8" />
+      </head>
+      <body
+        className={inter.variable}
+      // ✅ Use CSS variable instead of className for better performance
+      // This allows CSS to use: font-family: var(--font-inter)
+      >
+        {/* ✅ Wrap providers at top level */}
+        <NotificationProvider>
+          {children}
+        </NotificationProvider>
+      </body>
+    </html>
   );
 }
