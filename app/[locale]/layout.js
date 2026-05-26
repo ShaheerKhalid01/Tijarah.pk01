@@ -1,3 +1,5 @@
+import "../globals.css";
+
 export default function LocaleLayout({ children }) {
   return (
     <html lang="en">
