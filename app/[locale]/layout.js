@@ -1,32 +1,11 @@
-import { Inter } from 'next/font/google';
-import '../globals.css';
-import { NotificationProvider } from '../contexts/NotificationContext';
-
-const inter = Inter({
-  subsets: ['latin'],
-  variable: '--font-inter',
-  weight: ['400', '500', '600', '700'],
-  display: 'swap',
-  preload: true,
-});
-
-export const metadata = {
-  title: 'Tijarah.pk',
-  description: 'Your marketplace platform',
-};
-
-export default function RootLayout({ children }) {
+export default function LocaleLayout({ children }) {
   return (
-    <html lang="en" suppressHydrationWarning={true}>
-      <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <meta charSet="utf-8" />
-      </head>
-      <body className={inter.variable}>
-        <NotificationProvider>
+    <html lang="en">
+      <body>
+        <div style={{ padding: 30, fontFamily: "Arial" }}>
+          <h1>Tijarah.pk</h1>
           {children}
-        </NotificationProvider>
+        </div>
       </body>
     </html>
   );

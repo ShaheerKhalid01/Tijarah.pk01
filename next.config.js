@@ -6,7 +6,8 @@ const nextConfig = {
     ]
   },
   serverExternalPackages: ["mongoose"],
-  reactStrictMode: true
+  reactStrictMode: true,
+  productionBrowserSourceMaps: true
 };
 
 export default nextConfig;
